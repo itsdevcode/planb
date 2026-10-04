@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-
+from app.services.planner import PlannerService
 from app.schemas.plan import PlanAnalysisResponse, PlanRequest
 
 
@@ -15,11 +15,5 @@ router = APIRouter(
     summary="Analyze Plan A",
 )
 async def analyze_plan(payload: PlanRequest) -> PlanAnalysisResponse:
-    return PlanAnalysisResponse(
-        summary=payload.plan,
-        assumptions=[
-            "The plan can be executed as expected.",
-        ],
-        risks=[],
-        prepare_now=[],
-    )
+    planner = PlannerService()
+    return await planner.analyze(payload)
