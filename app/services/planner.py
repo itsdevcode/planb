@@ -1,6 +1,10 @@
 from app.ai.gemma import GemmaClient
-from app.schemas.plan import PlanAnalysisResponse, PlanRequest
-
+from app.schemas.plan import (
+    PlanAnalysisResponse,
+    PlanRequest,
+    RecoveryRequest,
+    RecoveryResponse,
+)
 
 class PlannerService:
     def __init__(self) -> None:
@@ -11,3 +15,9 @@ class PlannerService:
         request: PlanRequest,
     ) -> PlanAnalysisResponse:
         return await self.gemma.analyze_plan(request.plan)
+
+    async def recover(
+        self,
+        request: RecoveryRequest,
+    ) -> RecoveryResponse:
+        return await self.gemma.recover_plan(request)
