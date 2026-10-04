@@ -22,6 +22,32 @@ PlanB asks:
 
 The goal is not to generate catastrophic scenarios. It is to identify realistic weak points early enough that you can do something about them.
 
+## Screenshots
+
+### Challenge Your Plan A
+
+Describe your Plan A and let PlanB challenge the assumptions behind it.
+
+<p align="center">
+  <img src="docs/screenshots/planb-home.png" alt="PlanB home screen" width="900">
+</p>
+
+### Build Your Plan B
+
+PlanB identifies assumptions, realistic failure scenarios, warning signs, prevention strategies, and practical backup plans.
+
+<p align="center">
+  <img src="docs/screenshots/planb-analysis.png" alt="PlanB contingency analysis" width="900">
+</p>
+
+### Recover with Plan C
+
+When reality changes, describe what went wrong and PlanB uses the original context to build a recovery-focused Plan C.
+
+<p align="center">
+  <img src="docs/screenshots/planb-recovery.png" alt="PlanB Plan C recovery" width="900">
+</p>
+
 ## How It Works
 
 ```text
