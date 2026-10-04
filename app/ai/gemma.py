@@ -2,7 +2,12 @@
 
 from google import genai
 from app.core.config import settings
-from app.schemas.plan import PlanAnalysisResponse
+from app.schemas.plan import (
+    PlanAnalysisResponse,
+    RecoveryRequest,
+    RecoveryResponse,
+)
+
 
 class GemmaClient:
     def __init__(self) -> None:
@@ -66,3 +71,67 @@ Rules:
             raise RuntimeError("Gemma returned an empty response.")
 
         return PlanAnalysisResponse.model_validate_json(text)
+
+    async def recover_plan(
+        self,
+        request: RecoveryRequest,
+    ) -> RecoveryResponse:
+        analysis_json = request.analysis.model_dump_json()
+
+        prompt = f"""
+You are PlanB, an AI contingency and recovery planner.
+
+The user's original plan has encountered a real problem.
+Your job is to create a practical Plan C based on what actually happened.
+
+ORIGINAL PLAN:
+{request.original_plan}
+
+ORIGINAL PLAN B ANALYSIS:
+{analysis_json}
+
+WHAT WENT WRONG:
+{request.what_went_wrong}
+
+Return ONLY valid JSON using exactly this structure:
+
+{{
+  "situation_summary": "short summary of the current situation",
+  "immediate_actions": [
+    "action to take immediately"
+  ],
+  "revised_plan": [
+    "step in the new Plan C"
+  ],
+  "additional_risks": [
+    "new realistic risk created by this situation"
+  ]
+}}
+
+Rules:
+- Focus on recovery, not blame.
+- Prioritize actions by urgency.
+- Use the original plan and Plan B context.
+- Keep recommendations realistic and actionable.
+- Return at most 4 immediate actions.
+- Return at most 5 revised plan steps.
+- Return at most 3 additional risks.
+- Do not give motivational advice.
+- Do not use Markdown.
+- Return JSON only.
+"""
+
+        response = await self.client.aio.models.generate_content(
+            model="gemma-4-26b-a4b-it",
+            contents=prompt,
+            config={
+                "temperature": 0.2,
+            },
+        )
+
+        text = response.text
+
+        if not text:
+            raise RuntimeError("Gemma returned an empty recovery response.")
+
+        return RecoveryResponse.model_validate_json(text)
